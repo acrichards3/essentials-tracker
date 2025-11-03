@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
   Table,
   TableBody,
@@ -155,18 +156,24 @@ function EssentialRow({
   };
 
   return (
-    <TableRow className="hover:bg-muted/50">
-      <TableCell className="font-medium">{rank}</TableCell>
+    <TableRow className="cursor-pointer hover:bg-muted/50">
+      <TableCell className="font-medium">
+        <Link className="block" href={`/essential/${essential.id}`}>
+          {rank}
+        </Link>
+      </TableCell>
       <TableCell>
-        <div className="flex items-center gap-3">
-          <span className="text-2xl">{essential.icon}</span>
-          <div className="flex flex-col">
-            <span className="font-semibold">{essential.name}</span>
-            <span className="text-muted-foreground text-xs">
-              {essential.unit}
-            </span>
+        <Link className="block" href={`/essential/${essential.id}`}>
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">{essential.icon}</span>
+            <div className="flex flex-col">
+              <span className="font-semibold">{essential.name}</span>
+              <span className="text-muted-foreground text-xs">
+                {essential.unit}
+              </span>
+            </div>
           </div>
-        </div>
+        </Link>
       </TableCell>
       <TableCell>
         <Badge variant="secondary">{essential.category}</Badge>
