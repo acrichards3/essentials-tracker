@@ -33,6 +33,63 @@ export const posts = createTable(
   ],
 );
 
+// Essentials table - stores the items being tracked
+export const essentials = createTable(
+  "essential",
+  (d) => ({
+    category: d.varchar({ length: 100 }).notNull(),
+    createdAt: d
+      .timestamp({ withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    icon: d.varchar({ length: 10 }).notNull().default("📦"),
+    id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
+    name: d.varchar({ length: 256 }).notNull(),
+    unit: d.varchar({ length: 50 }).notNull(), // e.g., "per gallon", "per dozen", "per pound"
+    updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
+  }),
+  (t) => [
+    index("essential_name_idx").on(t.name),
+    index("essential_category_idx").on(t.category),
+  ],
+);
+
+// Price entries table - stores historical price data
+export const priceEntries = createTable(
+  "price_entry",
+  (d) => ({
+    createdAt: d
+      .timestamp({ withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    essentialId: d
+      .integer()
+      .notNull()
+      .references(() => essentials.id, { onDelete: "cascade" }),
+    id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
+    location: d.varchar({ length: 256 }), // optional: where the price was observed
+    notes: d.text(), // optional: any additional notes
+    price: d.numeric({ precision: 10, scale: 2 }).notNull(), // stores price as decimal
+  }),
+  (t) => [
+    index("price_entry_essential_idx").on(t.essentialId),
+    index("price_entry_created_at_idx").on(t.createdAt),
+  ],
+);
+
+// Relations for essentials
+export const essentialsRelations = relations(essentials, ({ many }) => ({
+  priceEntries: many(priceEntries),
+}));
+
+// Relations for price entries
+export const priceEntriesRelations = relations(priceEntries, ({ one }) => ({
+  essential: one(essentials, {
+    fields: [priceEntries.essentialId],
+    references: [essentials.id],
+  }),
+}));
+
 export const users = createTable("user", (d) => ({
   email: d.varchar({ length: 255 }).notNull(),
   emailVerified: d

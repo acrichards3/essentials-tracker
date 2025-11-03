@@ -1,5 +1,9 @@
+"use client";
+
 import { Card, CardContent } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
+import { Skeleton } from "~/components/ui/skeleton";
+import { api } from "~/trpc/react";
 
 interface StatCardProps {
   change?: string;
@@ -42,7 +46,20 @@ function StatCard({
 }
 
 function AffordabilityIndexCard() {
-  const score = 42; // 0-100 scale
+  const { data: essentials } = api.essential.getAll.useQuery();
+
+  // Calculate affordability score based on average 7-day change
+  // Higher change = less affordable = higher score
+  const calculateAffordabilityScore = () => {
+    if (!essentials || essentials.length === 0) return 50;
+
+    // For now, return a moderate score
+    // TODO: Calculate this based on actual price trends
+    return 45;
+  };
+
+  const score = calculateAffordabilityScore();
+
   const getSentiment = (score: number) => {
     if (score <= 20)
       return { color: "text-green-500", label: "Very Affordable" };
@@ -114,29 +131,63 @@ function AffordabilityIndexCard() {
 }
 
 export function StatsCards() {
+  const { data: essentials, isLoading } = api.essential.getAll.useQuery();
+
+  // Calculate average price
+  const averagePrice = essentials
+    ? essentials.reduce((sum, e) => {
+        const price = parseFloat(e.latestPrice ?? "0");
+        return sum + price;
+      }, 0) / Math.max(essentials.length, 1)
+    : 0;
+
+  // Find essential with highest price (placeholder for "highest increase")
+  const highestPriceEssential = essentials
+    ? essentials.reduce((max, e) => {
+        const price = parseFloat(e.latestPrice ?? "0");
+        const maxPrice = parseFloat(max.latestPrice ?? "0");
+        return price > maxPrice ? e : max;
+      }, essentials[0]!)
+    : null;
+
+  if (isLoading) {
+    return (
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {[1, 2, 3, 4].map((i) => (
+          <Card key={i}>
+            <CardContent className="p-6">
+              <div className="flex flex-col gap-2">
+                <Skeleton className="h-4 w-32" />
+                <div className="flex items-baseline gap-2">
+                  <Skeleton className="h-8 w-24" />
+                  <Skeleton className="h-5 w-16" />
+                </div>
+                <Skeleton className="h-3 w-28" />
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       <StatCard
-        change="2.3%"
-        isPositive={false}
-        subtitle="Last 24 hours"
-        title="Average Essential Cost"
-        value="$3.89"
+        subtitle={`Across ${essentials?.length ?? 0} essentials`}
+        title="Average Price"
+        value={`$${averagePrice.toFixed(2)}`}
       />
       <AffordabilityIndexCard />
       <StatCard
-        change="12.4%"
-        isPositive={false}
-        subtitle="Last 7 days"
-        title="Highest Increase"
-        value="Eggs"
+        subtitle="Current highest"
+        title="Most Expensive"
+        value={highestPriceEssential?.name ?? "N/A"}
       />
       <StatCard
-        change="0.2%"
-        isPositive={true}
-        subtitle="Last 30 days"
-        title="Most Stable"
-        value="Milk"
+        subtitle="Total tracked items"
+        title="Essentials Tracked"
+        value={essentials?.length.toString() ?? "0"}
       />
     </div>
   );
