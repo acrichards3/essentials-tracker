@@ -149,10 +149,9 @@ export const essentialRouter = createTRPCRouter({
     .input(z.object({ essentialId: z.number() }))
     .query(async ({ ctx, input }) => {
       const now = new Date();
-      const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
-      const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
       const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
       const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+      const oneYearAgo = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
 
       // Get latest price
       const [latestPrice] = await ctx.db
@@ -166,32 +165,6 @@ export const essentialRouter = createTRPCRouter({
         return null;
       }
 
-      // Get price from 1 hour ago
-      const [priceOneHourAgo] = await ctx.db
-        .select()
-        .from(priceEntries)
-        .where(
-          and(
-            eq(priceEntries.essentialId, input.essentialId),
-            gte(priceEntries.createdAt, oneHourAgo),
-          ),
-        )
-        .orderBy(priceEntries.createdAt)
-        .limit(1);
-
-      // Get price from 24 hours ago
-      const [priceOneDayAgo] = await ctx.db
-        .select()
-        .from(priceEntries)
-        .where(
-          and(
-            eq(priceEntries.essentialId, input.essentialId),
-            gte(priceEntries.createdAt, oneDayAgo),
-          ),
-        )
-        .orderBy(priceEntries.createdAt)
-        .limit(1);
-
       // Get price from 7 days ago
       const [priceSevenDaysAgo] = await ctx.db
         .select()
@@ -200,6 +173,32 @@ export const essentialRouter = createTRPCRouter({
           and(
             eq(priceEntries.essentialId, input.essentialId),
             gte(priceEntries.createdAt, sevenDaysAgo),
+          ),
+        )
+        .orderBy(priceEntries.createdAt)
+        .limit(1);
+
+      // Get price from 30 days ago
+      const [priceThirtyDaysAgo] = await ctx.db
+        .select()
+        .from(priceEntries)
+        .where(
+          and(
+            eq(priceEntries.essentialId, input.essentialId),
+            gte(priceEntries.createdAt, thirtyDaysAgo),
+          ),
+        )
+        .orderBy(priceEntries.createdAt)
+        .limit(1);
+
+      // Get price from 1 year ago
+      const [priceOneYearAgo] = await ctx.db
+        .select()
+        .from(priceEntries)
+        .where(
+          and(
+            eq(priceEntries.essentialId, input.essentialId),
+            gte(priceEntries.createdAt, oneYearAgo),
           ),
         )
         .orderBy(priceEntries.createdAt)
@@ -231,12 +230,12 @@ export const essentialRouter = createTRPCRouter({
 
       return {
         avgPrice30d: avgPriceResult?.avg ?? null,
-        change1h: calculateChange(latestPrice.price, priceOneHourAgo?.price),
+        change1y: calculateChange(latestPrice.price, priceOneYearAgo?.price),
         change7d: calculateChange(
           latestPrice.price,
           priceSevenDaysAgo?.price,
         ),
-        change24h: calculateChange(latestPrice.price, priceOneDayAgo?.price),
+        change30d: calculateChange(latestPrice.price, priceThirtyDaysAgo?.price),
         currentPrice: latestPrice.price,
       };
     }),

@@ -30,6 +30,7 @@ export function TradingViewChart({ data }: TradingViewChartProps) {
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<"Line" | "Candlestick"> | null>(null);
+  const isInitializedRef = useRef(false);
   const [chartType, setChartType] = useState<ChartType>("line");
   const [scaleType, setScaleType] = useState<ScaleType>("linear");
 
@@ -84,16 +85,22 @@ export function TradingViewChart({ data }: TradingViewChartProps) {
   }, []);
 
   useEffect(() => {
-    if (!chartRef.current) return;
+    const chart = chartRef.current;
+    if (!chart || !data || data.length === 0) return;
 
-    // Remove existing series
-    if (seriesRef.current) {
-      chartRef.current.removeSeries(seriesRef.current);
+    // Only try to remove series if we've already initialized once
+    if (isInitializedRef.current && seriesRef.current) {
+      try {
+        chart.removeSeries(seriesRef.current);
+      } catch {
+        // Silently ignore - series may have already been removed
+      }
+      seriesRef.current = null;
     }
 
     if (chartType === "line") {
       // Create line series
-      const lineSeries = chartRef.current.addSeries(LineSeries, {
+      const lineSeries = chart.addSeries(LineSeries, {
         color: "#3b82f6",
         crosshairMarkerRadius: 6,
         crosshairMarkerVisible: true,
@@ -110,11 +117,14 @@ export function TradingViewChart({ data }: TradingViewChartProps) {
         }))
         .sort((a, b) => a.time - b.time) as LineData[];
 
-      lineSeries.setData(lineData);
-      seriesRef.current = lineSeries;
+      if (lineData.length > 0) {
+        lineSeries.setData(lineData);
+        seriesRef.current = lineSeries;
+        isInitializedRef.current = true;
+      }
     } else {
       // Create candlestick series
-      const candleSeries = chartRef.current.addSeries(CandlestickSeries, {
+      const candleSeries = chart.addSeries(CandlestickSeries, {
         borderDownColor: "#ef4444",
         borderUpColor: "#10b981",
         downColor: "#ef4444",
@@ -125,12 +135,15 @@ export function TradingViewChart({ data }: TradingViewChartProps) {
 
       // Aggregate data into weekly candles
       const candleData = aggregateToCandles(data) as CandlestickData[];
-      candleSeries.setData(candleData);
-      seriesRef.current = candleSeries;
+      if (candleData.length > 0) {
+        candleSeries.setData(candleData);
+        seriesRef.current = candleSeries;
+        isInitializedRef.current = true;
+      }
     }
 
     // Fit content
-    chartRef.current.timeScale().fitContent();
+    chart.timeScale().fitContent();
   }, [data, chartType]);
 
   // Update scale mode when scaleType changes

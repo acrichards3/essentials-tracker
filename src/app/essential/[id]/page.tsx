@@ -77,23 +77,6 @@ export default async function EssentialDetailPage({
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">24h Change</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div
-              className={`text-2xl font-bold ${
-                isPositive(stats?.change24h ?? null)
-                  ? "text-green-600"
-                  : "text-red-600"
-              }`}
-            >
-              {formatChange(stats?.change24h ?? null)}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium">7d Change</CardTitle>
           </CardHeader>
           <CardContent>
@@ -111,13 +94,36 @@ export default async function EssentialDetailPage({
 
         <Card>
           <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium">30d Change</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div
+              className={`text-2xl font-bold ${
+                isPositive(stats?.change30d ?? null)
+                  ? "text-green-600"
+                  : "text-red-600"
+              }`}
+            >
+              {formatChange(stats?.change30d ?? null)}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium">
-              30d Average
+              1 Year Change
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {stats?.avgPrice30d ? `$${stats.avgPrice30d}` : "N/A"}
+            <div
+              className={`text-2xl font-bold ${
+                isPositive(stats?.change1y ?? null)
+                  ? "text-green-600"
+                  : "text-red-600"
+              }`}
+            >
+              {formatChange(stats?.change1y ?? null)}
             </div>
           </CardContent>
         </Card>

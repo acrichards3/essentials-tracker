@@ -26,9 +26,9 @@ export function EssentialsTable() {
               <TableHead>Name</TableHead>
               <TableHead>Category</TableHead>
               <TableHead className="text-right">Price</TableHead>
-              <TableHead className="text-right">1h %</TableHead>
-              <TableHead className="text-right">24h %</TableHead>
               <TableHead className="text-right">7d %</TableHead>
+              <TableHead className="text-right">30d %</TableHead>
+              <TableHead className="text-right">1y %</TableHead>
               <TableHead className="text-right">Avg Price (30d)</TableHead>
               <TableHead className="text-right">Last Updated</TableHead>
             </TableRow>
@@ -97,9 +97,9 @@ export function EssentialsTable() {
             <TableHead>Name</TableHead>
             <TableHead>Category</TableHead>
             <TableHead className="text-right">Price</TableHead>
-            <TableHead className="text-right">1h %</TableHead>
-            <TableHead className="text-right">24h %</TableHead>
             <TableHead className="text-right">7d %</TableHead>
+            <TableHead className="text-right">30d %</TableHead>
+            <TableHead className="text-right">1y %</TableHead>
             <TableHead className="text-right">Avg Price (30d)</TableHead>
             <TableHead className="text-right">Last Updated</TableHead>
           </TableRow>
@@ -187,42 +187,42 @@ function EssentialRow({
         ) : (
           <span
             className={
-              isPositive(stats?.change1h ?? null)
-                ? "text-green-600"
-                : "text-red-600"
-            }
-          >
-            {formatChange(stats?.change1h ?? null)}
-          </span>
-        )}
-      </TableCell>
-      <TableCell className="text-right">
-        {statsLoading ? (
-          <Skeleton className="ml-auto h-4 w-12" />
-        ) : (
-          <span
-            className={
-              isPositive(stats?.change24h ?? null)
-                ? "text-green-600"
-                : "text-red-600"
-            }
-          >
-            {formatChange(stats?.change24h ?? null)}
-          </span>
-        )}
-      </TableCell>
-      <TableCell className="text-right">
-        {statsLoading ? (
-          <Skeleton className="ml-auto h-4 w-12" />
-        ) : (
-          <span
-            className={
               isPositive(stats?.change7d ?? null)
                 ? "text-green-600"
                 : "text-red-600"
             }
           >
             {formatChange(stats?.change7d ?? null)}
+          </span>
+        )}
+      </TableCell>
+      <TableCell className="text-right">
+        {statsLoading ? (
+          <Skeleton className="ml-auto h-4 w-12" />
+        ) : (
+          <span
+            className={
+              isPositive(stats?.change30d ?? null)
+                ? "text-green-600"
+                : "text-red-600"
+            }
+          >
+            {formatChange(stats?.change30d ?? null)}
+          </span>
+        )}
+      </TableCell>
+      <TableCell className="text-right">
+        {statsLoading ? (
+          <Skeleton className="ml-auto h-4 w-12" />
+        ) : (
+          <span
+            className={
+              isPositive(stats?.change1y ?? null)
+                ? "text-green-600"
+                : "text-red-600"
+            }
+          >
+            {formatChange(stats?.change1y ?? null)}
           </span>
         )}
       </TableCell>
