@@ -28,24 +28,6 @@ export async function Header() {
             >
               Essentials
             </Link>
-            <Link
-              className="text-muted-foreground hover:text-primary text-sm font-medium transition-colors"
-              href="/trending"
-            >
-              Trending
-            </Link>
-            <Link
-              className="text-muted-foreground hover:text-primary text-sm font-medium transition-colors"
-              href="/categories"
-            >
-              Categories
-            </Link>
-            <Link
-              className="text-muted-foreground hover:text-primary text-sm font-medium transition-colors"
-              href="/alerts"
-            >
-              Price Alerts
-            </Link>
           </nav>
         </div>
 
@@ -53,10 +35,6 @@ export async function Header() {
         <div className="hidden items-center gap-4 md:flex">
           {session && (
             <>
-              <Button size="sm" variant="ghost">
-                Watchlist
-              </Button>
-              
               <Link
                 className="flex items-center gap-2 rounded-md px-3 py-1.5 transition-colors hover:bg-accent"
                 href="/profile"

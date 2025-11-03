@@ -62,27 +62,6 @@ export function MobileNav({ session }: MobileNavProps) {
             >
               Essentials
             </Link>
-            <Link
-              className="text-muted-foreground hover:text-primary rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent"
-              href="/trending"
-              onClick={() => setIsOpen(false)}
-            >
-              Trending
-            </Link>
-            <Link
-              className="text-muted-foreground hover:text-primary rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent"
-              href="/categories"
-              onClick={() => setIsOpen(false)}
-            >
-              Categories
-            </Link>
-            <Link
-              className="text-muted-foreground hover:text-primary rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent"
-              href="/alerts"
-              onClick={() => setIsOpen(false)}
-            >
-              Price Alerts
-            </Link>
 
             {/* Divider */}
             <div className="border-t border-border" />
@@ -90,15 +69,6 @@ export function MobileNav({ session }: MobileNavProps) {
             {/* User Section */}
             {session ? (
               <>
-                <Button
-                  className="justify-start"
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Watchlist
-                </Button>
-
                 <Link
                   className="flex items-center gap-3 rounded-md px-3 py-2 transition-colors hover:bg-accent"
                   href="/profile"

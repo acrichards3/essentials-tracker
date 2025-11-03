@@ -37,6 +37,14 @@ export function TradingViewChart({ data }: TradingViewChartProps) {
   useEffect(() => {
     if (!chartContainerRef.current) return;
 
+    // Get responsive height based on screen size
+    const getHeight = () => {
+      if (typeof window !== "undefined") {
+        return window.innerWidth < 640 ? 300 : 400;
+      }
+      return 400;
+    };
+
     // Create chart
     const chart = createChart(chartContainerRef.current, {
       crosshair: {
@@ -46,7 +54,7 @@ export function TradingViewChart({ data }: TradingViewChartProps) {
         horzLines: { color: "#1f2937" },
         vertLines: { color: "#1f2937" },
       },
-      height: 400,
+      height: getHeight(),
       layout: {
         background: { color: "transparent", type: ColorType.Solid },
         textColor: "#9ca3af",
@@ -70,7 +78,11 @@ export function TradingViewChart({ data }: TradingViewChartProps) {
     // Handle resize
     const handleResize = () => {
       if (chartContainerRef.current && chartRef.current) {
+        const getHeight = () => {
+          return window.innerWidth < 640 ? 300 : 400;
+        };
         chartRef.current.applyOptions({
+          height: getHeight(),
           width: chartContainerRef.current.clientWidth,
         });
       }
@@ -158,13 +170,13 @@ export function TradingViewChart({ data }: TradingViewChartProps) {
   }, [scaleType]);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3 sm:space-y-4">
       {/* Toggle buttons */}
-      <div className="flex flex-wrap items-center gap-4">
+      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
         {/* Chart Type Toggle */}
-        <div className="flex gap-2">
+        <div className="flex gap-1.5 sm:gap-2">
           <button
-            className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+            className={`flex-1 rounded-md px-2 py-1.5 text-xs font-medium transition-colors sm:flex-none sm:px-4 sm:py-2 sm:text-sm ${
               chartType === "line"
                 ? "bg-primary text-primary-foreground"
                 : "bg-muted text-muted-foreground hover:bg-muted/80"
@@ -174,7 +186,7 @@ export function TradingViewChart({ data }: TradingViewChartProps) {
             Line
           </button>
           <button
-            className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+            className={`flex-1 rounded-md px-2 py-1.5 text-xs font-medium transition-colors sm:flex-none sm:px-4 sm:py-2 sm:text-sm ${
               chartType === "candlestick"
                 ? "bg-primary text-primary-foreground"
                 : "bg-muted text-muted-foreground hover:bg-muted/80"
@@ -186,12 +198,12 @@ export function TradingViewChart({ data }: TradingViewChartProps) {
         </div>
 
         {/* Divider */}
-        <div className="bg-border h-8 w-px" />
+        <div className="bg-border hidden h-8 w-px sm:block" />
 
         {/* Scale Type Toggle */}
-        <div className="flex gap-2">
+        <div className="flex gap-1.5 sm:gap-2">
           <button
-            className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+            className={`flex-1 rounded-md px-2 py-1.5 text-xs font-medium transition-colors sm:flex-none sm:px-4 sm:py-2 sm:text-sm ${
               scaleType === "linear"
                 ? "bg-primary text-primary-foreground"
                 : "bg-muted text-muted-foreground hover:bg-muted/80"
@@ -201,7 +213,7 @@ export function TradingViewChart({ data }: TradingViewChartProps) {
             Linear
           </button>
           <button
-            className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+            className={`flex-1 rounded-md px-2 py-1.5 text-xs font-medium transition-colors sm:flex-none sm:px-4 sm:py-2 sm:text-sm ${
               scaleType === "logarithmic"
                 ? "bg-primary text-primary-foreground"
                 : "bg-muted text-muted-foreground hover:bg-muted/80"
@@ -214,7 +226,10 @@ export function TradingViewChart({ data }: TradingViewChartProps) {
       </div>
 
       {/* Chart container */}
-      <div className="relative" ref={chartContainerRef} />
+      <div
+        className="relative h-[300px] sm:h-[400px]"
+        ref={chartContainerRef}
+      />
     </div>
   );
 }

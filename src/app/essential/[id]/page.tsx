@@ -42,46 +42,56 @@ export default async function EssentialDetailPage({
   };
 
   return (
-    <div className="container mx-auto space-y-6 py-8">
+    <div className="container mx-auto space-y-4 px-3 py-4 sm:space-y-6 sm:px-4 sm:py-8">
       {/* Header */}
-      <div className="flex items-center gap-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
         <Link href="/">
-          <Button size="icon" variant="ghost">
+          <Button className="self-start" size="icon" variant="ghost">
             <ArrowLeft className="h-4 w-4" />
           </Button>
         </Link>
-        <div className="flex flex-1 items-center gap-4">
-          <span className="text-5xl">{essential.icon}</span>
-          <div>
-            <h1 className="text-3xl font-bold">{essential.name}</h1>
-            <p className="text-muted-foreground">{essential.unit}</p>
+        <div className="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+          <div className="flex items-center gap-3">
+            <span className="text-3xl sm:text-5xl">{essential.icon}</span>
+            <div className="min-w-0 flex-1">
+              <h1 className="truncate text-xl font-bold sm:text-3xl">
+                {essential.name}
+              </h1>
+              <p className="text-muted-foreground text-xs sm:text-base">
+                {essential.unit}
+              </p>
+            </div>
           </div>
-          <Badge className="ml-4" variant="secondary">
+          <Badge className="self-start sm:ml-4" variant="secondary">
             {essential.category}
           </Badge>
         </div>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Current Price</CardTitle>
+          <CardHeader className="pb-1 sm:pb-2">
+            <CardTitle className="text-xs font-medium sm:text-sm">
+              Current Price
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-lg font-bold sm:text-2xl">
               {stats?.currentPrice ? formatPrice(stats.currentPrice) : "N/A"}
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">7d Change</CardTitle>
+          <CardHeader className="pb-1 sm:pb-2">
+            <CardTitle className="text-xs font-medium sm:text-sm">
+              7d Change
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div
-              className={`text-2xl font-bold ${
+              className={`text-lg font-bold sm:text-2xl ${
                 isPositive(stats?.change7d ?? null)
                   ? "text-green-600"
                   : "text-red-600"
@@ -93,12 +103,14 @@ export default async function EssentialDetailPage({
         </Card>
 
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">30d Change</CardTitle>
+          <CardHeader className="pb-1 sm:pb-2">
+            <CardTitle className="text-xs font-medium sm:text-sm">
+              30d Change
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div
-              className={`text-2xl font-bold ${
+              className={`text-lg font-bold sm:text-2xl ${
                 isPositive(stats?.change30d ?? null)
                   ? "text-green-600"
                   : "text-red-600"
@@ -110,14 +122,14 @@ export default async function EssentialDetailPage({
         </Card>
 
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">
+          <CardHeader className="pb-1 sm:pb-2">
+            <CardTitle className="text-xs font-medium sm:text-sm">
               1 Year Change
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div
-              className={`text-2xl font-bold ${
+              className={`text-lg font-bold sm:text-2xl ${
                 isPositive(stats?.change1y ?? null)
                   ? "text-green-600"
                   : "text-red-600"
@@ -131,8 +143,8 @@ export default async function EssentialDetailPage({
 
       {/* Chart */}
       <Card>
-        <CardHeader>
-          <CardTitle>Price History</CardTitle>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base sm:text-lg">Price History</CardTitle>
         </CardHeader>
         <CardContent>
           <TradingViewChart
@@ -144,21 +156,23 @@ export default async function EssentialDetailPage({
 
       {/* Price History Table */}
       <Card>
-        <CardHeader>
-          <CardTitle>Recent Price Entries</CardTitle>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base sm:text-lg">
+            Recent Price Entries
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {essential.priceHistory.slice(0, 10).map((entry) => (
               <div
-                className="flex items-center justify-between border-b pb-2 last:border-0"
+                className="flex flex-col gap-2 border-b pb-2 last:border-0 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
                 key={entry.id}
               >
-                <div>
-                  <div className="font-semibold">
+                <div className="min-w-0 flex-1">
+                  <div className="font-semibold text-sm sm:text-base">
                     {formatPrice(entry.price)}
                   </div>
-                  <div className="text-muted-foreground text-sm">
+                  <div className="text-muted-foreground text-xs sm:text-sm">
                     {new Date(entry.createdAt).toLocaleString()}
                   </div>
                   {entry.location && (
@@ -168,7 +182,7 @@ export default async function EssentialDetailPage({
                   )}
                 </div>
                 {entry.notes && (
-                  <div className="text-muted-foreground text-sm max-w-md">
+                  <div className="text-muted-foreground text-xs sm:max-w-md sm:text-sm">
                     {entry.notes}
                   </div>
                 )}
