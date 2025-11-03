@@ -7,12 +7,11 @@ export function SignOutButton() {
   return (
     <Button
       className="cursor-pointer transition-all hover:brightness-110"
-      onClick={() => signOut({ callbackUrl: "/" })}
       size="sm"
       variant="destructive"
+      onClick={() => signOut({ callbackUrl: "/" })}
     >
       Sign Out
     </Button>
   );
 }
-
